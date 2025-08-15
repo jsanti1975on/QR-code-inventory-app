@@ -25,3 +25,4 @@ inventory-app/
 ├── data/ # Created automatically to store inventory
 └── list_inventory.sh # Bash script to print inventory
 ```
+<img width="1920" height="543" alt="inventory-app" src="https://github.com/user-attachments/assets/a2f618d5-be8d-4216-9f7a-458836414047" />
