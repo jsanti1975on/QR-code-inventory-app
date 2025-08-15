@@ -52,8 +52,9 @@ wget this repo down | image shows running the bash script and a count of 8 small
 
 
 
+<img width="754" height="598" alt="github-image-815" src="https://github.com/user-attachments/assets/86ebfd93-40ef-4e7b-9113-76a117f6f110" />
 
 
 
 
-<img width="1920" height="543" alt="inventory-app" src="https://github.com/user-attachments/assets/a2f618d5-be8d-4216-9f7a-458836414047" />
+
