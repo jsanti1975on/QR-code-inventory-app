@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inventory Input</title>
+  <style>
+    body { font-family: sans-serif; text-align:center; margin-top:60px; }
+    input, button { font-size:18px; padding:10px; margin:10px; width:300px; }
+    form { display:inline-block; }
+  </style>
+</head>
+<body>
+  <h2>Enter Inventory</h2>
+  <form method="POST">
+    <input type="text" name="color" placeholder="Color (e.g. GREEN)" required><br>
+    <input type="text" name="size" placeholder="Size (e.g. SMALL)" required><br>
+    <input type="number" name="quantity" placeholder="Count (e.g. 8)" required><br>
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
