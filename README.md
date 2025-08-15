@@ -25,4 +25,27 @@ inventory-app/
 ├── data/ # Created automatically to store inventory
 └── list_inventory.sh # Bash script to print inventory
 ```
+
+```Bash
+Seed a record from the VM:
+curl -X POST -d "color=GREEN&size=SMALL&quantity=8" http://127.0.0.1:5000
+```
+
+```Bash
+Print the inventory:
+./list_inventory.sh
+```
+
+
+```Bash
+Keep it running in the background (optional)
+nohup bash -c "source venv/bin/activate && python app.py" >/tmp/inventory.log 2>&1 &
+```
+
+
+
+
+
+
+
 <img width="1920" height="543" alt="inventory-app" src="https://github.com/user-attachments/assets/a2f618d5-be8d-4216-9f7a-458836414047" />
