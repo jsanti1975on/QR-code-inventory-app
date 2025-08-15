@@ -42,6 +42,14 @@ Keep it running in the background (optional)
 nohup bash -c "source venv/bin/activate && python app.py" >/tmp/inventory.log 2>&1 &
 ```
 
+## After venv and update and intall of modules
+
+```Bash
+wget this repo down | image shows running the bash script and a count of 8 small green shirts.
+```
+
+<img width="754" height="598" alt="github-image-815" src="https://github.com/user-attachments/assets/3d72e3ed-90f9-4b9e-9b48-abe320e5761c" />
+
 
 
 
