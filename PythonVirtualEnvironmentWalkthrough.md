@@ -10,28 +10,27 @@
 ```Bash
 Run:
 python3 --version
-*Expected output (something like):*
+```
+
+**Expected output (something like):**
+```Bash
 Python 3.10.12
 ```
 
 ## 3. Create a project folder
-
 ```Bash
 mkdir ~/inventory-app
 cd ~/inventory-app
 ```
 
 ## 4. Create the virtual environment
-
 ```Bash
 python3 -m venv venv
 ```
 
-
 > This makes a folder called venv/ that contains its own Python and its own pip.
 
 ## 5. Activate the environment
-
 ```Bash
 source venv/bin/activate
 ```
