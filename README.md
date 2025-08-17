@@ -55,9 +55,11 @@ wget -O inventory-app.zip https://github.com/jsanti1975on/inventory-app/archive/
 unzip inventory-app.zip
 
 # 3. Move into folder (GitHub names it inventory-app-main by default)
+
+```Bash
 mv inventory-app-main inventory-app
 cd inventory-app
-
+```
 
 <img width="754" height="598" alt="github-image-815" src="https://github.com/user-attachments/assets/86ebfd93-40ef-4e7b-9113-76a117f6f110" />
 
