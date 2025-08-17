@@ -19,8 +19,8 @@ Python 3.10.12
 
 ## 3. Create a project folder
 ```Bash
-mkdir ~/inventory-app
-cd ~/inventory-app
+mkdir ~/practice
+cd ~/practice
 ```
 
 ## 4. Create the virtual environment
@@ -38,7 +38,7 @@ source venv/bin/activate
 ### When it works, your shell prompt will show:
 
 ```Bash
-(venv) username@hostname:~/inventory-app$
+(venv) username@hostname:~/practice$
 ```
 
 > The (venv) means you’re inside the toolbox for this project.
