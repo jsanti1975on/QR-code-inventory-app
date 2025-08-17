@@ -42,7 +42,7 @@ Keep it running in the background (optional)
 nohup bash -c "source venv/bin/activate && python app.py" >/tmp/inventory.log 2>&1 &
 ```
 
-## After installing the virtual environment, update and intall of modules
+## After installing the virtual environment, update and install of modules
 
 ```Bash
 wget this repo down | image shows running the bash script and a count of 8 small green shirts.
