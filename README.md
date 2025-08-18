@@ -58,7 +58,7 @@ wget this repo down | image shows running the bash script and a count of 8 small
 wget -O QR-code-inventory-app.zip https://github.com/jsanti1975on/QR-code-inventory-app/archive/refs/heads/main.zip
 
 # 2. Unzip
-unzip inventory-app.zip
+unzip <filename.zip>
 
 # 3. Move into folder (GitHub names it inventory-app-main by default)
 
