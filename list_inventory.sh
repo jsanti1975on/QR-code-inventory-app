@@ -1,4 +1,5 @@
 #!/bin/bash
+# Added done to last line
 DATA_DIR="data"
 
 if [ ! -d "$DATA_DIR" ]; then
