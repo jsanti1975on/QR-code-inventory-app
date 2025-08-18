@@ -1,4 +1,4 @@
-# 🐍 Python Virtual Environment Walkthrough
+# 🐍 Python Virtual Environment Walkthrough: 
 
 ## 1. What is a virtual environment?
 
