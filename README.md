@@ -49,7 +49,7 @@ wget this repo down | image shows running the bash script and a count of 8 small
 ```
 
 # 1. Download as zip
-wget -O inventory-app.zip https://github.com/jsanti1975on/inventory-app/archive/refs/heads/main.zip
+wget -O QR-code-inventory-app.zip https://github.com/jsanti1975on/QR-code-inventory-app/archive/refs/heads/main.zip
 
 # 2. Unzip
 unzip inventory-app.zip
