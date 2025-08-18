@@ -20,3 +20,5 @@ for color_dir in "$DATA_DIR"/*/; do
     echo "  Size: $size - Quantity: $qty"
   done
   echo
+done
+
