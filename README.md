@@ -60,6 +60,7 @@ unzip inventory-app.zip
 mv inventory-app-main inventory-app
 cd inventory-app
 ```
+<img width="1072" height="741" alt="QR-inventory-app-image" src="https://github.com/user-attachments/assets/6b84b4e5-8998-40a6-971d-feceb50f1559" />
 
 <img width="754" height="598" alt="github-image-815" src="https://github.com/user-attachments/assets/86ebfd93-40ef-4e7b-9113-76a117f6f110" />
 
