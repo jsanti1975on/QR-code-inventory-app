@@ -1,20 +1,47 @@
+
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8" />
   <title>Inventory Input</title>
   <style>
-    body { font-family: sans-serif; text-align:center; margin-top:60px; }
-    input, button { font-size:18px; padding:10px; margin:10px; width:300px; }
-    form { display:inline-block; }
+    body { font-family: system-ui, Arial, sans-serif; margin: 36px; color: #222; }
+    h1, h2 { margin: 0 0 12px; }
+    .grid { display: grid; gap: 24px; grid-template-columns: 1fr 320px; align-items: start; }
+    form { border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; }
+    label { display: block; font-weight: 600; margin-top: 10px; }
+    input { width: 100%; padding: 10px; font-size: 16px; margin-top: 6px; }
+    button { padding: 10px 14px; font-size: 16px; margin-top: 16px; cursor: pointer; }
+    .card { border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; }
+    .muted { color: #666; font-size: 14px; }
+    img.qr { width: 100%; height: auto; image-rendering: pixelated; }
+    code { background: #f6f6f6; padding: 2px 6px; border-radius: 4px; }
   </style>
 </head>
 <body>
-  <h2>Enter Inventory</h2>
-  <form method="POST">
-    <input type="text" name="color" placeholder="Color (e.g. GREEN)" required><br>
-    <input type="text" name="size" placeholder="Size (e.g. SMALL)" required><br>
-    <input type="number" name="quantity" placeholder="Count (e.g. 8)" required><br>
-    <button type="submit">Submit</button>
-  </form>
+  <h1>Simple Inventory</h1>
+  <p class="muted">Add entries on the left. Scan the QR on the right to open this app from another device on your LAN.</p>
+
+  <div class="grid">
+    <form method="POST">
+      <h2>Add Inventory</h2>
+      <label>Color
+        <input type="text" name="color" placeholder="GREEN" required />
+      </label>
+      <label>Size
+        <input type="text" name="size" placeholder="SMALL" required />
+      </label>
+      <label>Quantity
+        <input type="number" name="quantity" placeholder="8" required />
+      </label>
+      <button type="submit">Save</button>
+    </form>
+
+    <div class="card">
+      <h2>Scan to Open</h2>
+      <img class="qr" src="{{ url_for('qr_png') }}" alt="QR code to open app" />
+      <p class="muted">Or type: <code>{{ lan_url }}</code></p>
+    </div>
+  </div>
 </body>
 </html>
