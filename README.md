@@ -1,8 +1,11 @@
 # Simple Flask Inventory App
 
+This project is to help me learn Python, BASH, and Github.
 A minimal inventory tracking system built with **Flask** and plain filesystem storage.  
 Each inventory item is stored as a text file in `data/COLOR/SIZE.txt` with the quantity inside.  
 Includes a helper Bash script to print a clean inventory summary.
+I have built the ability to push the counts to a .pdf and will add after I write it out and test.
+Later we can wire up a button on the html page to trigger the reports and also add more type of inventory.
 
 ---
 
