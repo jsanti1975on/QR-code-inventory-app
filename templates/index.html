@@ -14,7 +14,6 @@
     .card { border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; }
     .muted { color: #666; font-size: 14px; }
     img.qr { max-width: 200px; width: 100%; height: auto; image-rendering: crisp-edges; }
-    pre#resetOut { margin-top: 8px; background: #f7f7f7; border: 1px solid #e5e5e5; padding: 8px; white-space: pre-wrap; }
     hr { border: none; border-top: 1px solid #eee; margin: 24px 0; }
   </style>
 </head>
@@ -23,7 +22,7 @@
   <p class="muted">Add entries on the left. Scan the QR on the right to open this app from another device on your LAN.</p>
 
   <div class="grid">
-    <form method="POST">
+    <form method="POST" action="/">
       <h2>Add Inventory</h2>
       <label>Color
         <input type="text" name="color" placeholder="GREEN" required />
@@ -44,26 +43,11 @@
     </div>
   </div>
 
-  <!-- NEW: Reset section -->
   <hr>
-  <button id="btnReset">Reset Inventory (empty <code>data/</code>)</button>
-  <pre id="resetOut" class="muted"></pre>
 
-  <script>
-    // Simple client-side call to /api/reset
-    document.getElementById('btnReset').addEventListener('click', async () => {
-      if (!confirm("This will clear ALL files in 'data/'. Continue?")) return;
-      const out = document.getElementById('resetOut');
-      out.textContent = "Working…";
-      try {
-        const r = await fetch("/api/reset", { method: "POST" });
-        const j = await r.json();
-        out.textContent = j.ok ? (j.stdout || "Reset complete.") :
-                                 ("Reset failed: " + (j.error || j.stderr || r.statusText));
-      } catch (e) {
-        out.textContent = "Error: " + e;
-      }
-    });
-  </script>
+  <!-- Reset button posts to /reset (no JS needed) -->
+  <form method="POST" action="/reset" onsubmit="return confirm('This will clear ALL files in data/. Continue?')">
+    <button type="submit">Reset Inventory (empty <code>data/</code>)</button>
+  </form>
 </body>
 </html>
