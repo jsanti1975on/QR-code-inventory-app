@@ -6,28 +6,9 @@ import netifaces
 import subprocess
 
 app = Flask(__name__)
+
 DATA_DIR = "data"
 PORT = 5000  # keep in sync with app.run()
-
-@app.route("/api/reset", methods=["POST"])
-def api_reset():
-    """Run reset_inventory.sh and return its stdout to the page."""
-    script_path = os.path.join(os.path.dirname(__file__), "reset_inventory.sh")  # adjust if stored elsewhere
-    if not os.path.isfile(script_path):
-        return {"ok": False, "error": "reset_inventory.sh not found"}, 500
-    try:
-        result = subprocess.run(
-            ["/bin/bash", script_path],
-            cwd=os.path.dirname(__file__),
-            capture_output=True,
-            text=True,
-            timeout=20
-        )
-        if result.returncode != 0:
-            return {"ok": False, "stderr": result.stderr}, 500
-        return {"ok": True, "stdout": result.stdout}
-    except subprocess.TimeoutExpired:
-        return {"ok": False, "error": "Timeout"}, 504
 
 def get_lan_ip() -> str:
     """
@@ -35,10 +16,11 @@ def get_lan_ip() -> str:
     Preference: private ranges (10/8, 172.16/12, 192.168/16).
     Fallback to 127.0.0.1 if nothing else found.
     """
-    private_prefixes = ("10.", "172.16.", "172.17.", "172.18.", "172.19.", "172.20.",
-                        "172.21.", "172.22.", "172.23.", "172.24.", "172.25.",
-                        "172.26.", "172.27.", "172.28.", "172.29.", "172.30.",
-                        "172.31.", "192.168.")
+    private_prefixes = (
+        "10.", "172.16.", "172.17.", "172.18.", "172.19.", "172.20.", "172.21.",
+        "172.22.", "172.23.", "172.24.", "172.25.", "172.26.", "172.27.",
+        "172.28.", "172.29.", "172.30.", "172.31.", "192.168."
+    )
     try:
         for iface in netifaces.interfaces():
             addrs = netifaces.ifaddresses(iface).get(netifaces.AF_INET, [])
@@ -71,35 +53,61 @@ def index():
 
         color_dir = os.path.join(DATA_DIR, color)
         os.makedirs(color_dir, exist_ok=True)
-
         size_file = os.path.join(color_dir, f"{size}.txt")
         with open(size_file, "w") as f:
             f.write(quantity)
-
         return redirect(url_for("index"))
 
     return render_template("index.html", lan_url=get_lan_url())
 
-@app.route("/qr/<data>")
-def generate_qr(data):
+@app.route("/qr.png")
+def qr_png():
+    """
+    Generate a PNG QR code for the LAN URL on the fly.
+    We disable caching so updated IPs don’t get stuck in the browser cache.
+    """
+    url = get_lan_url()
     qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,   #  Keep this small to control size (default ~200px)
-        border=4,
+        version=None,  # auto size
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=8,    # ~original visual size
+        border=2
     )
-    qr.add_data(data)
+    qr.add_data(url)
     qr.make(fit=True)
-
     img = qr.make_image(fill_color="black", back_color="white")
 
-    #  Force resize to consistent pixel dimensions
-    img = img.resize((200, 200))  
-
     buf = io.BytesIO()
-    img.save(buf, "PNG")
+    img.save(buf, format="PNG")
     buf.seek(0)
-    return send_file(buf, mimetype="image/png")
+
+    resp = make_response(send_file(buf, mimetype="image/png"))
+    resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    return resp
+
+# ---- NEW: reset endpoint for the button ----
+@app.route("/api/reset", methods=["POST"])
+def api_reset():
+    """
+    Run reset_inventory.sh and return its stdout.
+    Script should live at project root and be executable.
+    """
+    script_path = os.path.join(os.path.dirname(__file__), "reset_inventory.sh")
+    if not os.path.isfile(script_path):
+        return {"ok": False, "error": "reset_inventory.sh not found"}, 500
+    try:
+        result = subprocess.run(
+            ["/bin/bash", script_path],
+            cwd=os.path.dirname(__file__),
+            capture_output=True,
+            text=True,
+            timeout=20
+        )
+        if result.returncode != 0:
+            return {"ok": False, "stderr": result.stderr}, 500
+        return {"ok": True, "stdout": result.stdout}
+    except subprocess.TimeoutExpired:
+        return {"ok": False, "error": "Timeout"}, 504
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=PORT, debug=True)
