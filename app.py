@@ -3,10 +3,31 @@ import os
 import io
 import qrcode
 import netifaces
+import subprocess
 
 app = Flask(__name__)
 DATA_DIR = "data"
 PORT = 5000  # keep in sync with app.run()
+
+@app.route("/api/reset", methods=["POST"])
+def api_reset():
+    """Run reset_inventory.sh and return its stdout to the page."""
+    script_path = os.path.join(os.path.dirname(__file__), "reset_inventory.sh")  # adjust if stored elsewhere
+    if not os.path.isfile(script_path):
+        return {"ok": False, "error": "reset_inventory.sh not found"}, 500
+    try:
+        result = subprocess.run(
+            ["/bin/bash", script_path],
+            cwd=os.path.dirname(__file__),
+            capture_output=True,
+            text=True,
+            timeout=20
+        )
+        if result.returncode != 0:
+            return {"ok": False, "stderr": result.stderr}, 500
+        return {"ok": True, "stdout": result.stdout}
+    except subprocess.TimeoutExpired:
+        return {"ok": False, "error": "Timeout"}, 504
 
 def get_lan_ip() -> str:
     """
