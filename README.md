@@ -29,7 +29,7 @@ inventory-app/
 ├── templates/
 │ └── index.html # Input form
 ├── data/ # Created automatically to store inventory
-└── list_inventory.sh # Bash script to print inventory
+└── srv/retail/scripts/reset_inventory.sh
 ```
 
 ```Bash
