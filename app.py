@@ -5,8 +5,15 @@ import os
 import io
 import qrcode
 import netifaces
+import subprocess
 
 app = Flask(__name__)
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+RESET_SCRIPT = os.path.join(BASE_DIR, "srv", "retail", "scripts", "reset_inventory.sh")
+RESET_TOKEN = os.environ.get("RESET_TOKEN", "change-me")  # set in your env
+
+
 DATA_DIR = "data"
 PORT = 5000  # keep in sync with app.run()
 
@@ -43,7 +50,30 @@ def get_lan_ip() -> str:
 def get_lan_url() -> str:
     return f"http://{get_lan_ip()}:{PORT}"
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
+def index():
+    return render_template("index.html")@app.post("/api/reset-inventory")
+def reset_inventory():
+    token = request.headers.get("X-Reset-Token") or request.form.get("token")
+    if token != RESET_TOKEN:
+        abort(403)
+
+    if not os.path.isfile(RESET_SCRIPT):
+        return jsonify(ok=False, error="Reset script not found"), 500
+
+    try:
+        result = subprocess.run(
+            ["/bin/bash", RESET_SCRIPT],
+            cwd=BASE_DIR,                    # run from project root
+            env={"PATH": os.environ.get("PATH", "/usr/bin:/bin")},
+            capture_output=True, text=True, timeout=20
+        )
+        if result.returncode != 0:
+            return jsonify(ok=False, rc=result.returncode, stderr=result.stderr), 500
+        return jsonify(ok=True, stdout=result.stdout.strip())
+    except subprocess.TimeoutExpired:
+        return jsonify(ok=False, error="Timeout"), 504
+    
 def index():
     if request.method == "POST":
         color = request.form["color"].strip().upper()
