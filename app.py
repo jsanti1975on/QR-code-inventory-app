@@ -80,30 +80,26 @@ def index():
 
     return render_template("index.html", lan_url=get_lan_url())
 
-@app.route("/qr.png")
-def qr_png():
-    """
-    Generate a PNG QR code for the LAN URL on the fly.
-    We disable caching so updated IPs don’t get stuck in the browser cache.
-    """
-    url = get_lan_url()
+@app.route("/qr/<data>")
+def generate_qr(data):
     qr = qrcode.QRCode(
-        version=None,              # auto size
-        error_correction=qrcode.constants.ERROR_CORRECT_M,
-        box_size=8,                # pixels per “box”; tweak for bigger/smaller QR
-        border=2
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,   #  Keep this small to control size (default ~200px)
+        border=4,
     )
-    qr.add_data(url)
+    qr.add_data(data)
     qr.make(fit=True)
+
     img = qr.make_image(fill_color="black", back_color="white")
 
-    buf = io.BytesIO()
-    img.save(buf, format="PNG")
-    buf.seek(0)
+    #  Force resize to consistent pixel dimensions
+    img = img.resize((200, 200))  
 
-    resp = make_response(send_file(buf, mimetype="image/png"))
-    resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-    return resp
+    buf = io.BytesIO()
+    img.save(buf, "PNG")
+    buf.seek(0)
+    return send_file(buf, mimetype="image/png")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=PORT, debug=True)
