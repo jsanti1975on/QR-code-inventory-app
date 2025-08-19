@@ -37,6 +37,29 @@
       <button type="submit">Save</button>
     </form>
 
+    <hr style="margin:24px 0">
+
+<button id="btnReset" style="padding:10px 14px; font-size:16px;">
+  Reset Inventory (empty <code>data/</code>)
+</button>
+<pre id="resetOut" class="muted" style="margin-top:10px; white-space:pre-wrap;"></pre>
+
+<script>
+  document.getElementById('btnReset').addEventListener('click', async () => {
+    if (!confirm("This will clear ALL files in 'data/'. Continue?")) return;
+    const out = document.getElementById('resetOut');
+    out.textContent = "Working…";
+    try {
+      const r = await fetch("/api/reset", { method: "POST" });
+      const j = await r.json();
+      out.textContent = j.ok ? (j.stdout || "Reset complete.") :
+                               ("Reset failed: " + (j.error || j.stderr || r.statusText));
+    } catch (e) {
+      out.textContent = "Error: " + e;
+    }
+  });
+</script>
+
     <div class="card">
       <h2>Scan to Open</h2>
       <img class="qr" src="{{ url_for('qr_png') }}" alt="QR code to open app" />
