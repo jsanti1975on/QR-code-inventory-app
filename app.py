@@ -3,12 +3,13 @@ import os
 import io
 import qrcode
 import netifaces
-import subprocess
+import shutil  # <-- needed for rmtree
 
 app = Flask(__name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, "data")
+DATA_DIR = os.path.join(BASE_DIR, "data")   # <-- guaranteed inside project
+
 PORT = 5000  # keep in sync with app.run()
 
 def get_lan_ip() -> str:
@@ -47,6 +48,9 @@ def get_lan_url() -> str:
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    # ensure data dir exists for first run / display
+    os.makedirs(DATA_DIR, exist_ok=True)
+
     if request.method == "POST":
         color = request.form["color"].strip().upper()
         size = request.form["size"].strip().upper()
@@ -59,6 +63,8 @@ def index():
             f.write(quantity)
         return redirect(url_for("index"))
 
+    # (optional) sanity print during debug:
+    print(f"[DEBUG] DATA_DIR = {DATA_DIR}")
     return render_template("index.html", lan_url=get_lan_url())
 
 @app.route("/qr.png")
@@ -86,29 +92,14 @@ def qr_png():
     resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     return resp
 
-# ---- NEW: reset endpoint for the button ----
-@app.route("/api/reset", methods=["POST"])
-def api_reset():
-    """
-    Run reset_inventory.sh and return its stdout.
-    Script should live at project root and be executable.
-    """
-    script_path = os.path.join(os.path.dirname(__file__), "reset_inventory.sh")
-    if not os.path.isfile(script_path):
-        return {"ok": False, "error": "reset_inventory.sh not found"}, 500
-    try:
-        result = subprocess.run(
-            ["/bin/bash", script_path],
-            cwd=os.path.dirname(__file__),
-            capture_output=True,
-            text=True,
-            timeout=20
-        )
-        if result.returncode != 0:
-            return {"ok": False, "stderr": result.stderr}, 500
-        return {"ok": True, "stdout": result.stdout}
-    except subprocess.TimeoutExpired:
-        return {"ok": False, "error": "Timeout"}, 504
+# ---- Reset route (non-API; form POSTs here) ----
+@app.route("/reset", methods=["POST"])
+def reset():
+    # delete and recreate the data dir inside the project
+    if os.path.isdir(DATA_DIR):
+        shutil.rmtree(DATA_DIR)
+    os.makedirs(DATA_DIR, exist_ok=True)
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=PORT, debug=True)
