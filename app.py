@@ -7,7 +7,8 @@ import subprocess
 
 app = Flask(__name__)
 
-DATA_DIR = "data"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
 PORT = 5000  # keep in sync with app.run()
 
 def get_lan_ip() -> str:
