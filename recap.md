@@ -1,3 +1,5 @@
+```Bash
+
 Field Workflow (on tablet)
 
 Open the web app (scan the QR on the right panel or use the LAN URL).
@@ -32,3 +34,4 @@ Close the browser/tab on the tablet.
 In the project root, run the report script:
 
 ./list_inventory.sh
+```
