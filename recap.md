@@ -14,7 +14,7 @@ YELLOW, SMALL, 2
 
 Medium basket: repeat for MEDIUM (e.g., GREEN, MEDIUM, 4, etc.).
 
-Repeat for LARGE / XL / 1XL / 2XL / 3XL or Youth (YS/YM/YL) as needed.
+Repeat for LARGE / 1XL / 2XL / 3XL or Youth (YS/YM/YL) as needed.
 
 When a shirt style/batch is complete, press Reset Inventory (bottom of the page) to empty data/ so the next batch doesn’t mix.
 
