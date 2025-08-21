@@ -179,3 +179,80 @@ else
   echo "'$DATA_DIR' is already empty."
 fi
 ```
+
+```bash
+Thanks for the screenshot—that error tells us your script is running with set -u (treat unset variables as errors) and it hits a loop where size (or your sizes array) isn’t defined for at least one iteration. Easiest fix: make the script self-discover sizes from what actually exists in data/<COLOR>/<SIZE>.txt, build the columns once, then print a robust CSV. Here’s a drop-in replacement that won’t blow up on missing files and works with your current tree (e.g. data/GREEN/SMALL.txt).
+
+list_inventory.sh (safe & auto-detecting)
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Root of the app; default DATA_DIR is ./data unless you pass one in
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+DATA_DIR="${1:-$ROOT/data}"
+
+# Preferred size order. We'll include only those that actually exist.
+KNOWN_ORDER=(YS YM YL SMALL MEDIUM LARGE XL 2XL 3XL)
+
+# Discover which sizes exist across all colors
+declare -A seen
+if [[ -d "$DATA_DIR" ]]; then
+  while IFS= read -r -d '' f; do
+    bn="$(basename "$f")"        # e.g. SMALL.txt
+    sz="${bn%.*}"                # -> SMALL
+    seen["$sz"]=1
+  done < <(find "$DATA_DIR" -mindepth 2 -maxdepth 2 -type f -name '*.txt' -print0)
+fi
+
+# Build the columns we will print, in preferred order; fall back to SMALL
+cols=()
+for s in "${KNOWN_ORDER[@]}"; do
+  if [[ ${seen[$s]+x} ]]; then cols+=("$s"); fi
+done
+if ((${#cols[@]} == 0)); then cols=(SMALL); fi
+
+# Header (CSV so you can redirect to a file)
+printf "COLOR"
+for s in "${cols[@]}"; do printf ",%s" "$s"; done
+printf ",ROW_TTL\n"
+
+# No data dir? Print nothing else and exit successfully
+if [[ ! -d "$DATA_DIR" ]]; then
+  echo "data directory not found: $DATA_DIR" >&2
+  exit 0
+fi
+
+shopt -s nullglob
+for cdir in "$DATA_DIR"/*/; do
+  color="$(basename "$cdir")"
+  row_total=0
+  printf "%s" "$color"
+  for s in "${cols[@]}"; do
+    val=0
+    f="$cdir/$s.txt"
+    if [[ -f "$f" ]]; then
+      # Read digits only; treat blanks as 0
+      v="$(tr -cd '0-9' < "$f")"
+      [[ -n "$v" ]] && val="$v"
+    fi
+    printf ",%s" "$val"
+    (( row_total += val ))
+  done
+  printf ",%s\n" "$row_total"
+done
+
+How to use
+chmod +x list_inventory.sh
+./list_inventory.sh                  # uses ./data by default
+./list_inventory.sh /path/to/data    # optional explicit data dir
+
+What this fixes
+
+“size: unbound variable”: we always define arrays/vars and guard lookups.
+
+Works even if only one size exists (your current SMALL.txt).
+
+Outputs a clean CSV you can copy/paste or redirect:
+
+./list_inventory.sh > floor_count.csv
+```
