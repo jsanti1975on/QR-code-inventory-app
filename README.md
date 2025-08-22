@@ -28,6 +28,8 @@ document.getElementById('resetBtn').onclick = async () => {
   } catch (e) {
     msg.textContent = "Request failed: " + e;
   }
+};
+</script>
 ```
 
 # (Optional) Add an archive browser => drop in app.py
@@ -56,5 +58,4 @@ def get_archive_file(fname):
 
 
 
-};
-</script>
+
