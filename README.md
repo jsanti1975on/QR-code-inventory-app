@@ -3,7 +3,6 @@
 > Wire Reset Inventory button so it archives to permanent_archive/ first,
 > then clears data/ inside Flask (no external shell), so permissions are simpler and it works BYOO VM/tablet.
 
-# Changed app.py
 
 # Drop in index.html
 
